@@ -18,6 +18,17 @@ pub enum Square {
 }
 
 impl Square {
+    #[allow(clippy::cast_possible_truncation)]
+    pub const ALL: [Self; 64] = {
+        let mut squares = [unsafe { Self::from_u8_unchecked(0) }; 64];
+        let mut i = 0;
+        while i < 64 {
+            squares[i] = unsafe { Self::from_u8_unchecked(i as u8) };
+            i += 1;
+        }
+        squares
+    };
+
     /// Creates a [`Square`] from an algebraic coordinate (e.g. `"e4"`).
     ///
     /// # Safety

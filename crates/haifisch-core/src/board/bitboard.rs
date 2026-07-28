@@ -88,11 +88,38 @@ impl Bitboard {
         (self.0 & (1u64 << square.to_u8())) != 0
     }
 
+    /// Returns `true` if no bits are set.
+    #[inline]
+    #[must_use]
+    pub const fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+
     /// Get the number of set bits in the [`Bitboard`]
     #[inline]
     #[must_use]
     pub const fn popcount(self) -> u32 {
         self.0.count_ones()
+    }
+
+    /// Index of the least-significant set bit, or `64` if empty.
+    #[inline]
+    #[must_use]
+    pub const fn lsb(self) -> u32 {
+        self.0.trailing_zeros()
+    }
+
+    /// Clear and return the least-significant set square, if any.
+    #[inline]
+    pub const fn pop_lsb(&mut self) -> Option<Square> {
+        if self.0 == 0 {
+            return None;
+        }
+
+        #[allow(clippy::cast_possible_truncation)]
+        let sq = self.0.trailing_zeros() as u8;
+        self.0 &= self.0 - 1;
+        Some(unsafe { Square::from_u8_unchecked(sq) })
     }
 }
 
