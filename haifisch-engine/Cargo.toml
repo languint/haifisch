@@ -1,0 +1,13 @@
+[package]
+name = "haifisch-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+
+[dependencies]
+haifisch-core = { path = "../crates/haifisch-core" }
+
+[lints]
+workspace = true

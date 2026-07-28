@@ -8,11 +8,19 @@ use crate::board::{piece::Piece, square::Square};
 /// | 0-5   | from square |
 /// | 6-11  | to square   |
 /// | 12-15 | promotion   |
-/// | 16-.. | flags       |
+/// | 16    | capture     |
+/// | 17    | double push |
+/// | 18    | en passant  |
+/// | 19    | castle      |
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Move(u32);
 
 impl Move {
+    pub const CAPTURE: u32 = 1 << 16;
+    pub const DOUBLE_PUSH: u32 = 1 << 17;
+    pub const EN_PASSANT: u32 = 1 << 18;
+    pub const CASTLE: u32 = 1 << 19;
+
     #[must_use]
     pub const fn new(from: Square, to: Square) -> Self {
         Self((from.to_u8() as u32) | ((to.to_u8() as u32) << 6))
@@ -30,6 +38,11 @@ impl Move {
         };
         debug_assert!(code != 0);
         Self(Self::new(from, to).0 | (code << 12))
+    }
+
+    #[must_use]
+    pub const fn with_flags(self, flags: u32) -> Self {
+        Self(self.0 | flags)
     }
 
     #[must_use]
@@ -51,5 +64,29 @@ impl Move {
             4 => Some(Piece::Queen),
             _ => None,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    pub const fn is_capture(self) -> bool {
+        (self.0 & Self::CAPTURE) != 0
+    }
+
+    #[inline]
+    #[must_use]
+    pub const fn is_double_push(self) -> bool {
+        (self.0 & Self::DOUBLE_PUSH) != 0
+    }
+
+    #[inline]
+    #[must_use]
+    pub const fn is_en_passant(self) -> bool {
+        (self.0 & Self::EN_PASSANT) != 0
+    }
+
+    #[inline]
+    #[must_use]
+    pub const fn is_castle(self) -> bool {
+        (self.0 & Self::CASTLE) != 0
     }
 }

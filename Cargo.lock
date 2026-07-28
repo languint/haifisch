@@ -5,3 +5,10 @@ version = 4
 [[package]]
 name = "haifisch-core"
 version = "0.1.0"
+
+[[package]]
+name = "haifisch-engine"
+version = "0.1.0"
+dependencies = [
+ "haifisch-core",
+]

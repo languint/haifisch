@@ -43,12 +43,19 @@ impl Color {
             Self::Black => 'b',
         }
     }
+
+    /// Opposite color.
+    #[inline]
+    #[must_use]
+    pub const fn flip(self) -> Self {
+        unsafe { Self::from_u8_unchecked(self.to_u8() ^ 1) }
+    }
 }
 
 impl std::ops::Not for Color {
     type Output = Self;
     fn not(self) -> Self::Output {
-        unsafe { Self::from_u8_unchecked((self as u8) ^ 1) }
+        self.flip()
     }
 }
 
